@@ -34,19 +34,31 @@ export const getLoreList = async (loginToken: string): Promise<string[]> => {
         authorization: `bearer ${loginToken}`
       }
     }).then(async result => {
-      console.log('listResult', result)
     const body = await result.json()
-    console.log('loreList', body)
     return body as string[];
   });
 }
 
-export const postLore = (loginToken: string, toUpload: libraryPost) => {
-  fetch(`${baseURL}/${toUpload.id}`,
+export const getLoreItem = async (loginToken: string, id: string): Promise<any> => {
+  return fetch(`${baseURL}/${id}`,
+    {
+      method: 'GET',
+      headers: {
+        authorization: `bearer ${loginToken}`
+      }
+    }).then(async result => {
+    const body = await result.json()
+    return body as string[];
+  });
+}
+
+export const postLore =  async (loginToken: string, toUpload: libraryPost) => {
+  return fetch(`${baseURL}/${toUpload.id}`,
     {
     method: 'POST',
       headers: {
         authorization: `bearer ${loginToken}`
-      }
+      },
+      body: JSON.stringify(toUpload)
   }).then()
 }
