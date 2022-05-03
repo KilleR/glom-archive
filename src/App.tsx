@@ -3,6 +3,8 @@ import './App.css';
 import styled from "@emotion/styled";
 import Navigation from "./Components/Navigation/navigation";
 import {libraryPost, getLoreList, login, postLore} from "./API";
+import AddLoreModal from "./Components/Modal/add-lore-modal";
+import {formInputs} from "./config";
 
 
 const Header = styled.header`
@@ -11,6 +13,12 @@ const Header = styled.header`
 
 const Main = styled.main`
   padding: 0 100px;
+`
+
+const AddButton = styled.button`
+  position: absolute;
+  right: 100px;
+  
 `
 
 function App() {
@@ -32,24 +40,36 @@ function App() {
     }
   }, [loginToken])
 
+  const [modalState, setModalState ] = useState(false)
+
+  const modalSubmit = (data: formInputs ) => {
+    console.log('modal data', data);
+    setModalState(false);
+    const loreToPost: libraryPost = {
+      id: data.title.replace(' ', '-'),
+      title: data.title,
+      date: Date.now().toString(),
+      content: data.content,
+      metadata: {
+        tags: data.tags.split(',').map(tag => tag.trim())
+      }
+    }
+    postLore(loginToken, loreToPost)
+  }
+
   return (
     <div className="App">
+      <AddLoreModal visible={modalState} onSubmit={modalSubmit} />
       <Navigation items={['Stories', 'Timeline','Post']} />
       <Header>
-        <h1>Header</h1>
+        <AddButton onClick={ () => setModalState(!modalState) }>ADD</AddButton>
+        <h1>Glomdoring Lore</h1>
       </Header>
       <Main>
-        testBody
-        <div>
-          <button onClick={() => getLoreList(loginToken)}>Get</button>
-        </div>
-        <div>
-          <button onClick={() => postLore(loginToken, {id: 'lore1',content:'A test post', date: Date.now().toString(), metadata: {tags: ['lore', 'core', 'new']}})}>Post</button>
-        </div>
         <ul>
           {
             loreList.map(lore => (
-              <li>{lore}</li>
+              <li key={lore}>{lore}</li>
             ))
           }
         </ul>

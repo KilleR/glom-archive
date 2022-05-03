@@ -1,5 +1,6 @@
 export interface libraryPost {
   id: string,
+  title: string,
   content: string,
   date: string,
   metadata: {
@@ -33,6 +34,7 @@ export const getLoreList = async (loginToken: string): Promise<string[]> => {
         authorization: `bearer ${loginToken}`
       }
     }).then(async result => {
+      console.log('listResult', result)
     const body = await result.json()
     console.log('loreList', body)
     return body as string[];
